@@ -33,7 +33,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--dark);font-
 .pw-error{color:var(--red);font-size:12px;margin-top:10px;min-height:16px;font-weight:600}
 
 /* ── MAIN ── */
-#main{display:block;max-width:1400px;margin:0 auto;padding:28px}
+#main{display:none;max-width:1400px;margin:0 auto;padding:28px}
 @media(max-width:640px){#main{padding:14px}}
 
 /* ── HERO ── */
@@ -153,7 +153,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--dark);font-
 <body>
 
 <!-- LOCK SCREEN -->
-<div id="pw-screen" style="display:none">
+<div id="pw-screen">
   <div class="pw-box">
     <div class="pw-brand">mesh × amplifon</div>
     <div class="pw-logo">Weekly Report</div>
@@ -620,8 +620,8 @@ function apply(){
 // ── PASSWORD ──
 function checkPw(){
   const val=document.getElementById('pwi').value;
-  // simple hash: "amplifon" → accepted; leave blank to bypass for internal use
-  if(val===''||val.toLowerCase()==='amplifon'){
+  const hash=Array.from(val).reduce((h,c)=>Math.imul(31,h)+c.charCodeAt(0)|0,0).toString(16);
+  if(hash==='1278c46f'){
     const s=document.getElementById('pw-screen');
     s.style.transition='opacity .4s';s.style.opacity=0;
     setTimeout(()=>{s.style.display='none';document.getElementById('main').style.display='block';init();},400);
@@ -639,7 +639,6 @@ function init(){
   buildChips('c-staff',STAFF,'staff');
   apply();
 }
-init();
 </script>
 </body>
 </html>

@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mesh × Amplifon – Weekly Dashboard WE 31 May 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;1,700;1,800&family=Montserrat:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/2.2.0/chartjs-plugin-datalabels.min.js"></script>
+<style>
+:root{
+  --black:#0D0D0D; --dark:#1C1C1C; --mid:#555; --muted:#888; --silver:#BBB;
+  --line:#E2E2E2; --bg:#F5F4F1; --cream:#FAFAF7; --white:#FFFFFF;
+  --teal:#006C6C; --teal2:#008080; --teal-light:#E6F4F4; --teal-mid:#4AACAC;
+  --gold:#C9870C; --gold-light:#FBF3E3;
+  --red:#C03030; --red-light:#FCF0F0;
+  --shadow-sm:0 1px 4px rgba(0,0,0,.07); --shadow-md:0 4px 16px rgba(0,0,0,.10); --shadow-lg:0 8px 32px rgba(0,0,0,.16);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--dark);font-size:13px}
+
+/* ── LOCK SCREEN ── */
+#pw-screen{position:fixed;inset:0;background:#082828;z-index:9999;display:flex;align-items:center;justify-content:center;overflow:hidden}
+#pw-screen::before{content:'';position:absolute;inset:32px;border:2px solid rgba(0,128,128,.35);pointer-events:none}
+.pw-box{background:var(--white);padding:52px 48px;max-width:420px;width:100%;text-align:center;position:relative;z-index:1;box-shadow:0 24px 64px rgba(0,0,0,.5)}
+.pw-brand{font-family:'Montserrat',sans-serif;font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--teal);margin-bottom:12px}
+.pw-logo{font-family:'Playfair Display',serif;font-size:28px;font-weight:800;color:var(--dark);margin-bottom:4px;font-style:italic}
+.pw-week{font-family:'Montserrat',sans-serif;font-size:10px;font-weight:600;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;margin-bottom:28px}
+.pw-input{width:100%;padding:13px 16px;border:1.5px solid var(--line);font-size:14px;font-family:'Inter',sans-serif;outline:none;color:var(--dark);background:var(--cream);transition:border .2s}
+.pw-input:focus{border-color:var(--teal)}
+.pw-btn{margin-top:10px;width:100%;padding:14px;background:var(--teal);color:#fff;border:none;font-family:'Montserrat',sans-serif;font-size:11px;font-weight:800;cursor:pointer;letter-spacing:.14em;text-transform:uppercase;transition:background .15s}
+.pw-btn:hover{background:var(--teal2)}
+.pw-error{color:var(--red);font-size:12px;margin-top:10px;min-height:16px;font-weight:600}
+
+/* ── MAIN ── */
+#main{display:block;max-width:1400px;margin:0 auto;padding:28px}
+@media(max-width:640px){#main{padding:14px}}
+
+/* ── HERO ── */
+.hero{background:var(--dark);padding:0;color:#fff;position:relative;overflow:hidden;margin-bottom:24px;display:grid;grid-template-columns:1fr 180px}
+.hero-body{padding:40px 48px;position:relative;z-index:1}
+.hero-eyebrow{font-family:'Montserrat',sans-serif;font-size:10px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:12px;display:flex;align-items:center;gap:10px}
+.hero-eyebrow::before{content:'';display:inline-block;width:28px;height:2px;background:var(--teal-mid);flex-shrink:0}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(26px,3.2vw,42px);font-weight:800;line-height:1.1;margin-bottom:8px;color:#fff;font-style:italic}
+.hero h1 strong{color:var(--teal-mid);font-style:normal}
+.hero-sub{font-size:12px;color:rgba(255,255,255,.5);margin-bottom:30px}
+.hero-kpi-row{display:flex;gap:1px;flex-wrap:wrap}
+.hero-kpi{background:rgba(255,255,255,.07);padding:16px 20px;flex:1;min-width:100px;border-left:3px solid rgba(255,255,255,.15);transition:background .15s}
+.hero-kpi:hover{background:rgba(255,255,255,.13)}
+.hero-kpi-lbl{font-family:'Montserrat',sans-serif;font-size:8.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:7px}
+.hero-kpi-val{font-family:'Montserrat',sans-serif;font-size:clamp(20px,2.4vw,30px);font-weight:900;line-height:1;color:#fff}
+.hero-kpi-val.ac{color:var(--teal-mid)}
+.hero-kpi-sub{font-size:10px;color:rgba(255,255,255,.35);margin-top:3px}
+.hero-deco{background:var(--teal);clip-path:polygon(30% 0%,100% 0%,100% 100%,0% 100%);display:flex;align-items:center;justify-content:flex-end;padding:24px 24px 24px 48px}
+.hero-deco-text{font-family:'Montserrat',sans-serif;font-size:46px;font-weight:900;color:rgba(255,255,255,.2);line-height:1;writing-mode:vertical-rl;transform:rotate(180deg);letter-spacing:.06em}
+@media(max-width:860px){.hero{grid-template-columns:1fr}.hero-deco{display:none}}
+
+/* ── FILTER ── */
+.filter-bar{background:var(--white);padding:18px 24px;box-shadow:var(--shadow-sm);border:1px solid var(--line);margin-bottom:24px}
+.filter-row{display:flex;flex-wrap:wrap;gap:8px;align-items:flex-start;margin-bottom:10px}
+.filter-row:last-child{margin-bottom:0}
+.filter-divider{border:none;border-top:1px solid var(--line);margin:10px 0}
+.fl{font-family:'Montserrat',sans-serif;font-size:9px;font-weight:800;color:var(--teal);letter-spacing:.15em;text-transform:uppercase;white-space:nowrap;padding-top:7px;min-width:64px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;flex:1}
+.chip{padding:5px 12px;border:1.5px solid var(--line);background:var(--cream);font-size:10.5px;font-weight:600;cursor:pointer;transition:all .15s;white-space:nowrap;font-family:'Montserrat',sans-serif;color:var(--mid);letter-spacing:.02em}
+.chip:hover{border-color:var(--teal);color:var(--teal)}
+.chip.active{background:var(--teal);border-color:var(--teal);color:#fff}
+.reset-btn{padding:6px 14px;background:var(--teal-light);color:var(--teal);border:1.5px solid var(--teal);font-size:10.5px;font-weight:700;cursor:pointer;font-family:'Montserrat',sans-serif;text-transform:uppercase;letter-spacing:.05em;transition:all .15s}
+.reset-btn:hover{background:var(--teal);color:#fff}
+.filter-hint{font-size:11px;color:var(--silver);font-style:italic;margin-left:10px}
+
+/* ── SECTION ── */
+.section-label{font-family:'Montserrat',sans-serif;font-size:9px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--teal);margin-bottom:12px;display:flex;align-items:center;gap:10px}
+.section-label::after{content:'';flex:1;height:1px;background:var(--line)}
+
+/* ── GRID ── */
+.cg{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-bottom:18px}
+.cg3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-bottom:18px}
+@media(max-width:860px){.cg,.cg3{grid-template-columns:1fr}}
+.cp{background:var(--white);padding:22px 24px;box-shadow:var(--shadow-sm);border:1px solid var(--line)}
+.cp-t{border-top:3px solid var(--teal)}
+.cp-g{border-top:3px solid var(--gold)}
+.pt{font-family:'Playfair Display',serif;font-size:14px;font-weight:700;margin-bottom:16px;color:var(--dark)}
+.cw{position:relative;height:260px}
+.cw-sm{position:relative;height:220px}
+
+/* ── STAT CARDS ── */
+.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px}
+@media(max-width:860px){.stat-grid{grid-template-columns:1fr 1fr}}
+.stat-card{background:var(--white);padding:20px 22px;border:1px solid var(--line);box-shadow:var(--shadow-sm);border-left:4px solid var(--teal)}
+.stat-card.warn{border-left-color:var(--gold)}
+.stat-card.crit{border-left-color:var(--red)}
+.stat-lbl{font-family:'Montserrat',sans-serif;font-size:8.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.stat-val{font-family:'Montserrat',sans-serif;font-size:28px;font-weight:900;color:var(--dark);line-height:1}
+.stat-val.ac{color:var(--teal)}
+.stat-sub{font-size:11px;color:var(--muted);margin-top:4px}
+
+/* ── STORE TABLE ── */
+.tg{display:grid;grid-template-columns:1fr;gap:18px;margin-bottom:20px}
+.tp{background:var(--white);padding:22px 24px;box-shadow:var(--shadow-sm);border:1px solid var(--line)}
+.sort-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px}
+.sort-select{padding:5px 10px;border:1.5px solid var(--line);font-family:'Montserrat',sans-serif;font-size:10px;font-weight:600;outline:none;cursor:pointer;background:#fff;color:var(--mid);text-transform:uppercase;letter-spacing:.04em}
+.sort-select:focus{border-color:var(--teal)}
+.ts{width:100%;padding:8px 12px;border:1.5px solid var(--line);font-family:'Inter',sans-serif;font-size:13px;outline:none;margin-bottom:12px;color:var(--dark);background:var(--cream)}
+.ts:focus{border-color:var(--teal)}
+.dt{width:100%;border-collapse:collapse}
+.dt th{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:800;color:var(--silver);letter-spacing:.14em;text-transform:uppercase;padding:8px 10px;text-align:left;border-bottom:2px solid var(--line);cursor:pointer;user-select:none;white-space:nowrap}
+.dt th:hover{color:var(--teal)}
+.dt td{padding:9px 10px;border-bottom:1px solid var(--line);font-size:12.5px;vertical-align:middle;color:var(--dark)}
+.dt tbody tr:hover{background:var(--teal-light);cursor:pointer}
+.dt tbody tr:last-child td{border-bottom:none}
+.rn{font-family:'Montserrat',sans-serif;font-size:11px;font-weight:800;color:var(--line)}
+.r1 .rn{color:var(--teal)}
+.uv{font-family:'Montserrat',sans-serif;font-size:13px;font-weight:800;color:var(--teal)}
+.rv{font-family:'Montserrat',sans-serif;font-size:11px;color:var(--mid)}
+.badge{display:inline-block;padding:2px 8px;font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;font-family:'Montserrat',sans-serif}
+.b-green{background:var(--teal-light);color:var(--teal)}
+.b-gold{background:var(--gold-light);color:var(--gold)}
+.b-red{background:var(--red-light);color:var(--red)}
+
+/* ── PERF BAR ── */
+.perf-bar{height:5px;background:var(--line);margin-top:5px;border-radius:2px;overflow:hidden}
+.perf-fill{height:100%;background:var(--teal);border-radius:2px;transition:width .4s}
+.perf-fill.warn{background:var(--gold)}
+.perf-fill.low{background:var(--red)}
+
+/* ── MODAL ── */
+.mo{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:500;display:none;align-items:flex-start;justify-content:center;padding:40px 16px;overflow-y:auto}
+.mo.open{display:flex}
+.mc2{background:#fff;max-width:800px;width:100%;box-shadow:var(--shadow-lg);overflow:hidden}
+.mh{background:var(--dark);color:#fff;padding:22px 28px;display:flex;justify-content:space-between;align-items:flex-start;border-left:5px solid var(--teal)}
+.mt{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;margin-bottom:3px;font-style:italic}
+.ms{font-size:12px;opacity:.55}
+.mx{background:rgba(255,255,255,.12);border:none;color:#fff;width:32px;height:32px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-weight:800}
+.mx:hover{background:var(--teal)}
+.mb{background:var(--bg);padding:24px 28px}
+.msec{background:#fff;border:1px solid var(--line);padding:18px;margin-bottom:14px}
+.msec:last-child{margin-bottom:0}
+.mst{font-family:'Montserrat',sans-serif;font-size:9px;font-weight:800;color:var(--teal);letter-spacing:.16em;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.mst::after{content:'';flex:1;height:1px;background:var(--line)}
+.mkg{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px}
+.mk{background:var(--cream);padding:14px;border-top:3px solid var(--line)}
+.mk.ac{border-top-color:var(--teal)}
+.mkl{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:800;color:var(--silver);letter-spacing:.14em;text-transform:uppercase;margin-bottom:6px}
+.mkv{font-family:'Montserrat',sans-serif;font-size:17px;font-weight:900;color:var(--dark)}
+.mkv.ac{color:var(--teal)}
+
+/* ── FOOTER ── */
+.footer{text-align:center;padding:28px 0 12px;font-size:11px;color:var(--silver);font-family:'Montserrat',sans-serif;letter-spacing:.08em;text-transform:uppercase}
+.footer strong{color:var(--teal)}
+</style>
+</head>
+<body>
+
+<!-- LOCK SCREEN -->
+<div id="pw-screen" style="display:none">
+  <div class="pw-box">
+    <div class="pw-brand">mesh × amplifon</div>
+    <div class="pw-logo">Weekly Report</div>
+    <div class="pw-week">Week Ending 31 May 2026</div>
+    <input type="password" class="pw-input" id="pwi" placeholder="Enter password" onkeydown="if(event.key==='Enter')checkPw()">
+    <button class="pw-btn" onclick="checkPw()">Access Dashboard</button>
+    <div class="pw-error" id="pwe"></div>
+  </div>
+</div>
+
+<div id="main">
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-body">
+      <div class="hero-eyebrow">mesh × Amplifon &nbsp;·&nbsp; Queensland &nbsp;·&nbsp; WE 31 May 2026</div>
+      <h1>Touchscreen Testing<br><strong>Dashboard</strong></h1>
+      <div class="hero-sub">Kawana · Mitchelton · North Lakes · Sunshine Plaza · Taigum</div>
+      <div class="hero-kpi-row">
+        <div class="hero-kpi"><div class="hero-kpi-lbl">Total Hours</div><div class="hero-kpi-val ac" id="k-hours">—</div><div class="hero-kpi-sub">hours worked</div></div>
+        <div class="hero-kpi"><div class="hero-kpi-lbl">Interactions</div><div class="hero-kpi-val" id="k-interactions">—</div><div class="hero-kpi-sub">customer interactions</div></div>
+        <div class="hero-kpi"><div class="hero-kpi-lbl">TS Completed</div><div class="hero-kpi-val ac" id="k-ts">—</div><div class="hero-kpi-sub">touchscreen tests</div></div>
+        <div class="hero-kpi"><div class="hero-kpi-lbl">TS / Hour</div><div class="hero-kpi-val" id="k-tph">—</div><div class="hero-kpi-sub">tests per hour</div></div>
+        <div class="hero-kpi"><div class="hero-kpi-lbl">Conversion</div><div class="hero-kpi-val" id="k-conv">—</div><div class="hero-kpi-sub">interaction → TS</div></div>
+      </div>
+    </div>
+    <div class="hero-deco"><div class="hero-deco-text">QLD</div></div>
+  </div>
+
+  <!-- FILTER BAR -->
+  <div class="filter-bar">
+    <div class="filter-row">
+      <span class="fl">Store</span><div class="chips" id="c-store"></div>
+    </div>
+    <hr class="filter-divider">
+    <div class="filter-row">
+      <span class="fl">Staff</span><div class="chips" id="c-staff"></div>
+    </div>
+    <div style="display:flex;align-items:center;margin-top:12px">
+      <button class="reset-btn" onclick="resetAll()">↺ Reset Filters</button>
+      <span class="filter-hint" id="fhint"></span>
+    </div>
+  </div>
+
+  <!-- KPI SUMMARY CARDS -->
+  <div class="section-label">Weekly Snapshot</div>
+  <div class="stat-grid" id="store-cards"></div>
+
+  <!-- CHARTS ROW 1 -->
+  <div class="section-label">Performance Breakdown</div>
+  <div class="cg">
+    <div class="cp cp-t"><div class="pt">TS Completions by Store</div><div class="cw"><canvas id="c-store-ts"></canvas></div></div>
+    <div class="cp cp-g"><div class="pt">TS per Hour by Store</div><div class="cw"><canvas id="c-store-tph"></canvas></div></div>
+  </div>
+  <div class="cg">
+    <div class="cp cp-t"><div class="pt">TS Completions by Staff Member</div><div class="cw"><canvas id="c-staff-ts"></canvas></div></div>
+    <div class="cp cp-g"><div class="pt">Conversion Rate by Staff Member</div><div class="cw"><canvas id="c-staff-conv"></canvas></div></div>
+  </div>
+  <div class="cg">
+    <div class="cp cp-t"><div class="pt">Daily TS Completions</div><div class="cw"><canvas id="c-daily-ts"></canvas></div></div>
+    <div class="cp cp-g"><div class="pt">Weekly Hours by Store</div><div class="cw"><canvas id="c-daily-hrs"></canvas></div></div>
+  </div>
+
+  <!-- STORE DETAIL TABLE -->
+  <div class="section-label">Store Detail</div>
+  <div class="tg">
+    <div class="tp" style="border-top:3px solid var(--teal)">
+      <div class="sort-header">
+        <div class="pt" style="margin-bottom:0">All Stores — Session Log</div>
+        <select class="sort-select" id="tbl-sort" onchange="renderTable()">
+          <option value="ts">TS Tests</option>
+          <option value="hours">Hours</option>
+          <option value="interactions">Interactions</option>
+          <option value="conv">Conversion</option>
+          <option value="tph">TS / Hour</option>
+          <option value="store">Store Name</option>
+          <option value="staff">Staff Name</option>
+        </select>
+      </div>
+      <input class="ts" placeholder="Search store or staff…" id="tbl-search" oninput="renderTable()">
+      <table class="dt">
+        <thead><tr>
+          <th>#</th><th>Store</th><th>Staff Member</th><th>Date</th><th>Hours</th><th>Interactions</th><th>TS Tests</th><th>TS/Hr</th><th>Conversion</th>
+        </tr></thead>
+        <tbody id="tbl-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- STAFF LEADERBOARD -->
+  <div class="section-label">Staff Leaderboard</div>
+  <div class="tg">
+    <div class="tp" style="border-top:3px solid var(--gold)">
+      <div class="sort-header">
+        <div class="pt" style="margin-bottom:0">Staff Performance Summary</div>
+        <select class="sort-select" id="staff-sort" onchange="renderStaffTable()">
+          <option value="ts">TS Tests</option>
+          <option value="tph">TS / Hour</option>
+          <option value="conv">Conversion</option>
+          <option value="hours">Hours</option>
+          <option value="name">Name</option>
+        </select>
+      </div>
+      <table class="dt">
+        <thead><tr>
+          <th>#</th><th>Staff Member</th><th>Sessions</th><th>Hours</th><th>Interactions</th><th>TS Tests</th><th>TS/Hr</th><th>Conversion</th>
+        </tr></thead>
+        <tbody id="staff-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="footer">Prepared by <strong>Mesh</strong> &nbsp;·&nbsp; Confidential &nbsp;·&nbsp; WE 31 May 2026</div>
+</div>
+
+<!-- MODAL -->
+<div class="mo" id="mo" onclick="if(event.target===this)closeMod()">
+  <div class="mc2">
+    <div class="mh"><div><div class="mt" id="m-title"></div><div class="ms" id="m-sub"></div></div><button class="mx" onclick="closeMod()">✕</button></div>
+    <div class="mb" id="m-body"></div>
+  </div>
+</div>
+
+<script>
+// ── DATA (from Amplifon_Summary_WE_31_05.xlsx) ──
+const ROWS = [
+  // [store, staff, date, hours, interactions, ts, conv, tph]
+  ["Kawana Retail","Nisarg Patel","25 May",5.0,34,3,0.09,0.60],
+  ["Kawana Retail","Nisarg Patel","26 May",2.5,5,1,0.20,0.40],
+  ["Kawana Retail","Nisarg Patel","27 May",5.0,6,2,0.33,0.40],
+  ["Kawana Retail","Sakshi Devkota","28 May",5.0,47,3,0.06,0.60],
+  ["Kawana Retail","Sakshi Devkota","30 May",4.0,45,6,0.13,1.50],
+  ["Kawana Retail","Taija Patella","25 May",5.0,34,3,0.09,0.60],
+  ["Mitchelton Retail","Rebekah Staunton","26 May",5.0,30,5,0.17,1.00],
+  ["Mitchelton Retail","Rebekah Staunton","27 May",5.0,25,6,0.24,1.20],
+  ["Mitchelton Retail","Rebekah Staunton","28 May",5.0,54,4,0.07,0.80],
+  ["Mitchelton Retail","Rebekah Staunton","30 May",4.0,35,5,0.14,1.25],
+  ["Mitchelton Retail","Sophia Ward","29 May",5.0,21,2,0.10,0.40],
+  ["North Lakes Retail","Taija Faaea","26 May",5.0,48,2,0.04,0.40],
+  ["North Lakes Retail","Taija Faaea","27 May",5.0,48,9,0.19,1.80],
+  ["North Lakes Retail","Zarina Fullerton","25 May",5.0,54,7,0.13,1.40],
+  ["North Lakes Retail","Zarina Fullerton","28 May",5.0,44,4,0.09,0.80],
+  ["North Lakes Retail","Zarina Fullerton","29 May",5.0,40,4,0.10,0.80],
+  ["North Lakes Retail","Zarina Fullerton","30 May",4.0,46,12,0.26,3.00],
+  ["Sunshine Plaza Maroochydore","Nisarg Patel","25 May",5.0,10,2,0.20,0.40],
+  ["Sunshine Plaza Maroochydore","Nisarg Patel","28 May",5.0,20,5,0.25,1.00],
+  ["Sunshine Plaza Maroochydore","Nisarg Patel","30 May",4.0,11,5,0.45,1.25],
+  ["Sunshine Plaza Maroochydore","Sakshi Devkota","29 May",5.0,56,13,0.23,2.60],
+  ["Sunshine Plaza Maroochydore","Taija Patella","26 May",5.0,42,2,0.05,0.40],
+  ["Sunshine Plaza Maroochydore","Taija Patella","27 May",5.0,36,2,0.06,0.40],
+  ["Taigum Retail","Belinda Prentice","30 May",4.0,28,0,0.00,0.00],
+  ["Taigum Retail","Carly Castaneda","26 May",4.5,55,2,0.04,0.44],
+  ["Taigum Retail","Shawn Xavier","28 May",5.0,42,5,0.12,1.00],
+  ["Taigum Retail","Shawn Xavier","29 May",5.0,40,3,0.08,0.60],
+  ["Taigum Retail","Taija Faaea","25 May",5.0,41,2,0.05,0.40],
+];
+
+const STORES = [...new Set(ROWS.map(r=>r[0]))].sort();
+const STAFF = [...new Set(ROWS.map(r=>r[1]))].sort();
+const TEAL='#006C6C', TEAL2='#4AACAC', GOLD='#C9870C', MID='#888';
+const tck={font:{family:'Inter',size:11},color:'#909090'};
+const grd={color:'#EEEEEE'};
+
+let F={stores:[],staff:[]};
+let CI={};
+
+// ── FILTER ──
+function filtered(){
+  return ROWS.filter(r=>{
+    if(F.stores.length && !F.stores.includes(r[0]))return false;
+    if(F.staff.length && !F.staff.includes(r[1]))return false;
+    return true;
+  });
+}
+
+// ── CHIPS ──
+function buildChips(id,items,key){
+  const c=document.getElementById(id);c.innerHTML='';
+  items.forEach(item=>{
+    const el=document.createElement('div');
+    el.className='chip';el.textContent=item;
+    el.onclick=()=>{
+      const a=F[key],i=a.indexOf(item);
+      if(i>-1){a.splice(i,1);el.classList.remove('active');}
+      else{a.push(item);el.classList.add('active');}
+      apply();
+    };
+    c.appendChild(el);
+  });
+}
+
+function resetAll(){
+  F={stores:[],staff:[]};
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+  apply();
+}
+
+// ── SUMMARY CARDS ──
+function buildStorecards(rows){
+  const sm={};
+  rows.forEach(r=>{
+    if(!sm[r[0]])sm[r[0]]={store:r[0],hours:0,interactions:0,ts:0};
+    sm[r[0]].hours+=r[3];sm[r[0]].interactions+=r[4];sm[r[0]].ts+=r[5];
+  });
+  const storeList=Object.values(sm).sort((a,b)=>b.ts-a.ts);
+  const maxTS=Math.max(...storeList.map(s=>s.ts));
+  document.getElementById('store-cards').innerHTML=storeList.map(s=>{
+    const tph=s.hours>0?(s.ts/s.hours).toFixed(2):'0.00';
+    const conv=s.interactions>0?((s.ts/s.interactions)*100).toFixed(1)+'%':'—';
+    const pct=maxTS>0?Math.round(s.ts/maxTS*100):0;
+    const cls=pct>=70?'':pct<40?'warn':'';
+    return `<div class="stat-card${s.ts===0?' crit':s.ts<10?' warn':''}" onclick="showStoreMod('${s.store.replace(/'/g,"\\'")}')">
+      <div class="stat-lbl">${s.store}</div>
+      <div class="stat-val ac">${s.ts} <span style="font-size:14px;font-weight:600;color:var(--mid)">TS</span></div>
+      <div class="stat-sub">${s.hours}h &nbsp;·&nbsp; ${s.interactions} interactions &nbsp;·&nbsp; ${conv} conv. &nbsp;·&nbsp; ${tph}/hr</div>
+      <div class="perf-bar"><div class="perf-fill${s.ts===0?' low':s.ts<10?' warn':''}" style="width:${pct}%"></div></div>
+    </div>`;
+  }).join('');
+}
+
+// ── CHARTS ──
+function dc(id){if(CI[id]){CI[id].destroy();delete CI[id];}}
+
+function buildCharts(rows){
+  // Store TS
+  dc('c-store-ts');
+  const storeTS={};STORES.forEach(s=>storeTS[s]=0);
+  rows.forEach(r=>storeTS[r[0]]=(storeTS[r[0]]||0)+r[5]);
+  const stKeys=Object.entries(storeTS).sort((a,b)=>b[1]-a[1]);
+  CI['c-store-ts']=new Chart(document.getElementById('c-store-ts'),{
+    type:'bar',
+    data:{labels:stKeys.map(([k])=>k.replace(' Retail','').replace(' Maroochydore','\nMaroochydore')),datasets:[{data:stKeys.map(([,v])=>v),backgroundColor:TEAL,borderRadius:3,hoverBackgroundColor:TEAL2}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},datalabels:{display:true,anchor:'end',align:'top',color:TEAL,font:{family:'Montserrat',size:11,weight:'800'}}},scales:{x:{grid:{display:false},ticks:tck},y:{grid:grd,ticks:tck,beginAtZero:true}}},
+    plugins:[ChartDataLabels]
+  });
+
+  // Store TS/Hr
+  dc('c-store-tph');
+  const storeTph={};STORES.forEach(s=>storeTph[s]={ts:0,hrs:0});
+  rows.forEach(r=>{storeTph[r[0]].ts+=r[5];storeTph[r[0]].hrs+=r[3];});
+  const tphData=Object.entries(storeTph).map(([k,v])=>({store:k,tph:v.hrs>0?(v.ts/v.hrs).toFixed(2):0})).sort((a,b)=>b.tph-a.tph);
+  CI['c-store-tph']=new Chart(document.getElementById('c-store-tph'),{
+    type:'bar',
+    data:{labels:tphData.map(d=>d.store.replace(' Retail','').replace(' Maroochydore','\nMaroochydore')),datasets:[{data:tphData.map(d=>d.tph),backgroundColor:GOLD,borderRadius:3,hoverBackgroundColor:'#E09820'}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},datalabels:{display:true,anchor:'end',align:'top',color:GOLD,font:{family:'Montserrat',size:11,weight:'800'}}},scales:{x:{grid:{display:false},ticks:tck},y:{grid:grd,ticks:tck,beginAtZero:true}}},
+    plugins:[ChartDataLabels]
+  });
+
+  // Staff TS
+  dc('c-staff-ts');
+  const staffTS={};
+  rows.forEach(r=>staffTS[r[1]]=(staffTS[r[1]]||0)+r[5]);
+  const stkList=Object.entries(staffTS).sort((a,b)=>b[1]-a[1]);
+  CI['c-staff-ts']=new Chart(document.getElementById('c-staff-ts'),{
+    type:'bar',
+    data:{labels:stkList.map(([k])=>k.split(' ')[0]),datasets:[{data:stkList.map(([,v])=>v),backgroundColor:TEAL,borderRadius:3}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},datalabels:{display:true,anchor:'end',align:'top',color:TEAL,font:{family:'Montserrat',size:11,weight:'800'}}},scales:{x:{grid:{display:false},ticks:{...tck}},y:{grid:grd,ticks:tck,beginAtZero:true}}},
+    plugins:[ChartDataLabels]
+  });
+
+  // Staff Conversion
+  dc('c-staff-conv');
+  const staffConv={};
+  rows.forEach(r=>{
+    if(!staffConv[r[1]])staffConv[r[1]]={ts:0,inter:0};
+    staffConv[r[1]].ts+=r[5];staffConv[r[1]].inter+=r[4];
+  });
+  const scList=Object.entries(staffConv).map(([k,v])=>({name:k,conv:v.inter>0?((v.ts/v.inter)*100).toFixed(1):0})).sort((a,b)=>b.conv-a.conv);
+  CI['c-staff-conv']=new Chart(document.getElementById('c-staff-conv'),{
+    type:'bar',
+    data:{labels:scList.map(d=>d.name.split(' ')[0]),datasets:[{data:scList.map(d=>d.conv),backgroundColor:scList.map(d=>d.conv>=15?TEAL:d.conv>=10?GOLD:'#C03030'),borderRadius:3}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},datalabels:{display:true,anchor:'end',align:'top',formatter:v=>v+'%',font:{family:'Montserrat',size:11,weight:'800'},color:'#444'}},scales:{x:{grid:{display:false},ticks:tck},y:{grid:grd,ticks:{...tck,callback:v=>v+'%'},beginAtZero:true}}},
+    plugins:[ChartDataLabels]
+  });
+
+  // Daily TS
+  dc('c-daily-ts');
+  const DATES=['25 May','26 May','27 May','28 May','29 May','30 May'];
+  const dailyTS=Object.fromEntries(DATES.map(d=>[d,0]));
+  rows.forEach(r=>dailyTS[r[2]]=(dailyTS[r[2]]||0)+r[5]);
+  CI['c-daily-ts']=new Chart(document.getElementById('c-daily-ts'),{
+    type:'line',
+    data:{labels:DATES.map(d=>d.replace(' May','')+' May'),datasets:[{data:DATES.map(d=>dailyTS[d]),borderColor:TEAL,backgroundColor:'rgba(0,108,108,.12)',fill:true,tension:0.35,pointBackgroundColor:TEAL,pointRadius:5,pointHoverRadius:7,borderWidth:2.5}]},
+    options:{responsive:true,maintainAspectRatio:false,layout:{padding:{top:20}},plugins:{legend:{display:false},datalabels:{display:true,anchor:'end',align:'top',color:TEAL,font:{family:'Montserrat',size:11,weight:'800'}}},scales:{x:{grid:{display:false},ticks:tck},y:{grid:grd,ticks:tck,beginAtZero:true}}},
+    plugins:[ChartDataLabels]
+  });
+
+  // Weekly Hours by Store
+  dc('c-daily-hrs');
+  const storeHrs={};
+  rows.forEach(r=>storeHrs[r[0]]=(storeHrs[r[0]]||0)+r[3]);
+  const storeHrsList=Object.entries(storeHrs).sort((a,b)=>b[1]-a[1]);
+  CI['c-daily-hrs']=new Chart(document.getElementById('c-daily-hrs'),{
+    type:'bar',
+    data:{labels:storeHrsList.map(([k])=>k.replace(' Retail','').replace('Sunshine Plaza Maroochydore','Sunshine Plaza').replace(' Maroochydore','')),datasets:[{data:storeHrsList.map(([,v])=>parseFloat(v.toFixed(1))),backgroundColor:TEAL,borderRadius:3,hoverBackgroundColor:TEAL2}]},
+    options:{clip:false,responsive:true,maintainAspectRatio:false,layout:{padding:{top:24}},plugins:{legend:{display:false},datalabels:{display:true,anchor:'end',align:'top',clip:false,color:TEAL,font:{family:'Montserrat',size:11,weight:'800'}}},scales:{x:{grid:{display:false},ticks:tck},y:{grid:grd,ticks:tck,beginAtZero:true}}},
+    plugins:[ChartDataLabels]
+  });
+}
+
+// ── ROW TABLE ──
+function renderTable(){
+  const q=(document.getElementById('tbl-search').value||'').toLowerCase();
+  const srt=document.getElementById('tbl-sort').value;
+  let rows=filtered().filter(r=>!q||r[0].toLowerCase().includes(q)||r[1].toLowerCase().includes(q));
+  if(srt==='ts')rows.sort((a,b)=>b[5]-a[5]);
+  else if(srt==='hours')rows.sort((a,b)=>b[3]-a[3]);
+  else if(srt==='interactions')rows.sort((a,b)=>b[4]-a[4]);
+  else if(srt==='conv')rows.sort((a,b)=>b[6]-a[6]);
+  else if(srt==='tph')rows.sort((a,b)=>b[7]-a[7]);
+  else if(srt==='store')rows.sort((a,b)=>a[0].localeCompare(b[0]));
+  else if(srt==='staff')rows.sort((a,b)=>a[1].localeCompare(b[1]));
+  document.getElementById('tbl-body').innerHTML=rows.map((r,i)=>{
+    const convBadge=r[6]===0?'b-red':r[6]>=0.20?'b-green':'b-gold';
+    return `<tr class="${i===0?'r1':''}" onclick="showSessionMod(${ROWS.indexOf(r)})">
+      <td class="rn">${i+1}</td>
+      <td><strong>${r[0].replace(' Retail','')}</strong></td>
+      <td>${r[1]}</td>
+      <td>${r[2]}</td>
+      <td>${r[3]}</td>
+      <td>${r[4]}</td>
+      <td class="uv">${r[5]}</td>
+      <td class="rv">${r[7].toFixed(2)}</td>
+      <td><span class="badge ${convBadge}">${(r[6]*100).toFixed(0)}%</span></td>
+    </tr>`;
+  }).join('');
+}
+
+// ── STAFF TABLE ──
+function renderStaffTable(){
+  const srt=document.getElementById('staff-sort').value;
+  const sm={};
+  filtered().forEach(r=>{
+    if(!sm[r[1]])sm[r[1]]={name:r[1],sessions:0,hours:0,interactions:0,ts:0};
+    sm[r[1]].sessions++;sm[r[1]].hours+=r[3];sm[r[1]].interactions+=r[4];sm[r[1]].ts+=r[5];
+  });
+  let rows=Object.values(sm);
+  if(srt==='ts')rows.sort((a,b)=>b.ts-a.ts);
+  else if(srt==='tph')rows.sort((a,b)=>(b.hours>0?b.ts/b.hours:0)-(a.hours>0?a.ts/a.hours:0));
+  else if(srt==='conv')rows.sort((a,b)=>(b.interactions>0?b.ts/b.interactions:0)-(a.interactions>0?a.ts/a.interactions:0));
+  else if(srt==='hours')rows.sort((a,b)=>b.hours-a.hours);
+  else rows.sort((a,b)=>a.name.localeCompare(b.name));
+  document.getElementById('staff-body').innerHTML=rows.map((r,i)=>{
+    const tph=r.hours>0?(r.ts/r.hours).toFixed(2):'0.00';
+    const conv=r.interactions>0?((r.ts/r.interactions)*100).toFixed(1)+'%':'—';
+    const convNum=r.interactions>0?r.ts/r.interactions:0;
+    const badge=convNum===0?'b-red':convNum>=0.20?'b-green':'b-gold';
+    return `<tr class="${i===0?'r1':''}" onclick="showStaffMod('${r.name.replace(/'/g,"\\'")}')">
+      <td class="rn">${i+1}</td>
+      <td><strong>${r.name}</strong></td>
+      <td>${r.sessions}</td>
+      <td>${r.hours.toFixed(1)}</td>
+      <td>${r.interactions}</td>
+      <td class="uv">${r.ts}</td>
+      <td class="rv">${tph}</td>
+      <td><span class="badge ${badge}">${conv}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+// ── KPI UPDATE ──
+function updKPI(rows){
+  const hrs=rows.reduce((a,r)=>a+r[3],0);
+  const inter=rows.reduce((a,r)=>a+r[4],0);
+  const ts=rows.reduce((a,r)=>a+r[5],0);
+  const tph=hrs>0?(ts/hrs).toFixed(2):'0.00';
+  const conv=inter>0?((ts/inter)*100).toFixed(1)+'%':'—';
+  document.getElementById('k-hours').textContent=hrs.toFixed(1);
+  document.getElementById('k-interactions').textContent=inter;
+  document.getElementById('k-ts').textContent=ts;
+  document.getElementById('k-tph').textContent=tph;
+  document.getElementById('k-conv').textContent=conv;
+  document.getElementById('fhint').textContent=`Showing ${rows.length} sessions`;
+}
+
+// ── MODALS ──
+function showStoreMod(store){
+  const rows=filtered().filter(r=>r[0]===store);
+  const hrs=rows.reduce((a,r)=>a+r[3],0);
+  const inter=rows.reduce((a,r)=>a+r[4],0);
+  const ts=rows.reduce((a,r)=>a+r[5],0);
+  const tph=hrs>0?(ts/hrs).toFixed(2):'0.00';
+  const conv=inter>0?((ts/inter)*100).toFixed(1)+'%':'—';
+  const staffMap={};
+  rows.forEach(r=>{if(!staffMap[r[1]])staffMap[r[1]]={ts:0,hrs:0,inter:0,sessions:0};staffMap[r[1]].ts+=r[5];staffMap[r[1]].hrs+=r[3];staffMap[r[1]].inter+=r[4];staffMap[r[1]].sessions++;});
+  document.getElementById('m-title').textContent=store;
+  document.getElementById('m-sub').textContent='Store Performance · WE 31 May 2026';
+  document.getElementById('m-body').innerHTML=`
+    <div class="msec"><div class="mst">Overview</div><div class="mkg">
+      <div class="mk ac"><div class="mkl">TS Tests</div><div class="mkv ac">${ts}</div></div>
+      <div class="mk ac"><div class="mkl">TS / Hour</div><div class="mkv ac">${tph}</div></div>
+      <div class="mk"><div class="mkl">Hours</div><div class="mkv">${hrs.toFixed(1)}</div></div>
+      <div class="mk"><div class="mkl">Interactions</div><div class="mkv">${inter}</div></div>
+      <div class="mk"><div class="mkl">Conversion</div><div class="mkv">${conv}</div></div>
+      <div class="mk"><div class="mkl">Sessions</div><div class="mkv">${rows.length}</div></div>
+    </div></div>
+    <div class="msec"><div class="mst">Staff Breakdown</div>
+      <table class="dt"><thead><tr><th>#</th><th>Staff Member</th><th>Sessions</th><th>Hours</th><th>TS Tests</th><th>TS/Hr</th><th>Conversion</th></tr></thead>
+      <tbody>${Object.entries(staffMap).sort((a,b)=>b[1].ts-a[1].ts).map(([name,d],i)=>{
+        const stph=d.hrs>0?(d.ts/d.hrs).toFixed(2):'0.00';
+        const sconv=d.inter>0?((d.ts/d.inter)*100).toFixed(1)+'%':'—';
+        return `<tr><td class="rn">${i+1}</td><td><strong>${name}</strong></td><td>${d.sessions}</td><td>${d.hrs.toFixed(1)}</td><td class="uv">${d.ts}</td><td class="rv">${stph}</td><td>${sconv}</td></tr>`;
+      }).join('')}</tbody></table>
+    </div>
+    <div class="msec"><div class="mst">Session Log</div>
+      <table class="dt"><thead><tr><th>Staff</th><th>Date</th><th>Hours</th><th>Interactions</th><th>TS Tests</th><th>TS/Hr</th><th>Conv.</th></tr></thead>
+      <tbody>${rows.map(r=>`<tr><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td>${r[4]}</td><td class="uv">${r[5]}</td><td class="rv">${r[7].toFixed(2)}</td><td>${(r[6]*100).toFixed(0)}%</td></tr>`).join('')}</tbody></table>
+    </div>`;
+  document.getElementById('mo').classList.add('open');
+}
+
+function showStaffMod(name){
+  const rows=filtered().filter(r=>r[1]===name);
+  const hrs=rows.reduce((a,r)=>a+r[3],0);
+  const inter=rows.reduce((a,r)=>a+r[4],0);
+  const ts=rows.reduce((a,r)=>a+r[5],0);
+  const tph=hrs>0?(ts/hrs).toFixed(2):'0.00';
+  const conv=inter>0?((ts/inter)*100).toFixed(1)+'%':'—';
+  document.getElementById('m-title').textContent=name;
+  document.getElementById('m-sub').textContent='Staff Performance · WE 31 May 2026';
+  document.getElementById('m-body').innerHTML=`
+    <div class="msec"><div class="mst">Overview</div><div class="mkg">
+      <div class="mk ac"><div class="mkl">TS Tests</div><div class="mkv ac">${ts}</div></div>
+      <div class="mk ac"><div class="mkl">TS / Hour</div><div class="mkv ac">${tph}</div></div>
+      <div class="mk"><div class="mkl">Hours</div><div class="mkv">${hrs.toFixed(1)}</div></div>
+      <div class="mk"><div class="mkl">Interactions</div><div class="mkv">${inter}</div></div>
+      <div class="mk"><div class="mkl">Conversion</div><div class="mkv">${conv}</div></div>
+      <div class="mk"><div class="mkl">Sessions</div><div class="mkv">${rows.length}</div></div>
+    </div></div>
+    <div class="msec"><div class="mst">Session Log</div>
+      <table class="dt"><thead><tr><th>#</th><th>Store</th><th>Date</th><th>Hours</th><th>Interactions</th><th>TS Tests</th><th>TS/Hr</th><th>Conv.</th></tr></thead>
+      <tbody>${rows.sort((a,b)=>b[5]-a[5]).map((r,i)=>`<tr class="${i===0?'r1':''}"><td class="rn">${i+1}</td><td>${r[0].replace(' Retail','')}</td><td>${r[2]}</td><td>${r[3]}</td><td>${r[4]}</td><td class="uv">${r[5]}</td><td class="rv">${r[7].toFixed(2)}</td><td>${(r[6]*100).toFixed(0)}%</td></tr>`).join('')}</tbody></table>
+    </div>`;
+  document.getElementById('mo').classList.add('open');
+}
+
+function showSessionMod(idx){
+  const r=ROWS[idx];
+  document.getElementById('m-title').textContent=r[0];
+  document.getElementById('m-sub').textContent=`${r[1]} · ${r[2]}`;
+  document.getElementById('m-body').innerHTML=`
+    <div class="msec"><div class="mst">Session Detail</div><div class="mkg">
+      <div class="mk ac"><div class="mkl">TS Tests</div><div class="mkv ac">${r[5]}</div></div>
+      <div class="mk ac"><div class="mkl">TS / Hour</div><div class="mkv ac">${r[7].toFixed(2)}</div></div>
+      <div class="mk"><div class="mkl">Hours</div><div class="mkv">${r[3]}</div></div>
+      <div class="mk"><div class="mkl">Interactions</div><div class="mkv">${r[4]}</div></div>
+      <div class="mk"><div class="mkl">Conversion</div><div class="mkv">${(r[6]*100).toFixed(0)}%</div></div>
+      <div class="mk"><div class="mkl">Date</div><div class="mkv">${r[2]}</div></div>
+    </div></div>`;
+  document.getElementById('mo').classList.add('open');
+}
+
+function closeMod(){document.getElementById('mo').classList.remove('open');}
+
+// ── APPLY ──
+function apply(){
+  const rows=filtered();
+  updKPI(rows);
+  buildStorecards(rows);
+  buildCharts(rows);
+  renderTable();
+  renderStaffTable();
+}
+
+// ── PASSWORD ──
+function checkPw(){
+  const val=document.getElementById('pwi').value;
+  // simple hash: "amplifon" → accepted; leave blank to bypass for internal use
+  if(val===''||val.toLowerCase()==='amplifon'){
+    const s=document.getElementById('pw-screen');
+    s.style.transition='opacity .4s';s.style.opacity=0;
+    setTimeout(()=>{s.style.display='none';document.getElementById('main').style.display='block';init();},400);
+  } else {
+    document.getElementById('pwe').textContent='Invalid password';
+    document.getElementById('pwi').value='';
+    setTimeout(()=>document.getElementById('pwe').textContent='',3000);
+  }
+}
+
+// ── INIT ──
+
+function init(){
+  buildChips('c-store',STORES,'stores');
+  buildChips('c-staff',STAFF,'staff');
+  apply();
+}
+init();
+</script>
+</body>
+</html>
